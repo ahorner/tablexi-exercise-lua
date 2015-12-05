@@ -16,7 +16,7 @@ end
 setmetatable(MenuSolver, {__call = new})
 
 -------------------------------------
--- Find all combinations adding to the passed target price for our menu.
+-- Find all combinations adding up to the passed target price for our menu.
 -- @param target a number representing the goal.
 -- @return an array of MenuCombinations.
 -------------------------------------
@@ -24,22 +24,29 @@ function MenuSolver:solutions (target)
   local item = self.menu.items[1]
   local combinations = {}
 
-  if item == nil then return combinations end
+  if not item then return combinations end
 
   local maximum = math.floor(target / item.price)
   for count = 0, maximum do
     new_target = target - (item.price * count)
 
     if new_target == 0 then
+      -- If we meet the target price exactly, we've found a basic combination.
       combination = MenuCombination()
       combination:add_item(item, count)
       table.insert(combinations, combination)
 
       break
     else
+      -- If we don't meet the target price exactly, we need to find all valid
+      -- solutions for permutations of the rest of the menu against the reduced
+      -- target price.
       solver = MenuSolver(self.menu:without(item))
-      subset = solver:solutions(target - (item.price * count))
+      subset = solver:solutions(new_target)
 
+      -- Once we have valid solutions for the rest of the menu, we add our
+      -- current item count to each of those combinations, to make up the
+      -- difference.
       for _, combination in ipairs(subset) do
         if count > 0 then combination:add_item(item, count) end
         table.insert(combinations, combination)
