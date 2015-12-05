@@ -1,0 +1,4 @@
+$5.01
+mixed fruita,$2.00
+mixed fruitb,$1.01
+mixed fruit,$6.45
