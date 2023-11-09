@@ -1,4 +1,3 @@
-local Menu = require("tablexi.Menu")
 local MenuCombination = require("tablexi.MenuCombination")
 
 local MenuSolver = {}
@@ -28,11 +27,11 @@ function MenuSolver:solutions (target)
 
   local maximum = math.floor(target / item.price)
   for count = 0, maximum do
-    new_target = target - (item.price * count)
+    local new_target = target - (item.price * count)
 
     if new_target == 0 then
       -- If we meet the target price exactly, we've found a basic combination.
-      combination = MenuCombination()
+      local combination = MenuCombination()
       combination:add_item(item, count)
       table.insert(combinations, combination)
 
@@ -41,8 +40,8 @@ function MenuSolver:solutions (target)
       -- If we don't meet the target price exactly, we need to find all valid
       -- solutions for permutations of the rest of the menu against the reduced
       -- target price.
-      solver = MenuSolver(self.menu:without(item))
-      subset = solver:solutions(new_target)
+      local solver = MenuSolver(self.menu:without(item))
+      local subset = solver:solutions(new_target)
 
       -- Once we have valid solutions for the rest of the menu, we add our
       -- current item count to each of those combinations, to make up the

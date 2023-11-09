@@ -18,7 +18,7 @@ setmetatable(MenuParser, {__call = new})
 -- @param value a string.
 -- @return a number.
 -------------------------------------
-function MenuParser:parse_currency (value)
+function MenuParser.parse_currency (value)
   return tonumber(value:match("$?(.+)")) * 100
 end
 
@@ -37,7 +37,7 @@ function MenuParser:parse_line (line)
     end
   end
 
-  return name, self:parse_currency(price)
+  return name, self.parse_currency(price)
 end
 
 -------------------------------------
@@ -46,7 +46,7 @@ end
 -- @return a number and a Menu.
 -------------------------------------
 function MenuParser:parse (filename)
-  file = io.open(filename, "r")
+  local file = io.open(filename, "r")
   if not file then error("Invalid file name supplied") end
 
   local target = nil
@@ -54,11 +54,11 @@ function MenuParser:parse (filename)
 
   for line in file:lines() do
     if target then
-      name, price = self:parse_line(line)
+      local name, price = self:parse_line(line)
       if price <= 0 then error("All item prices must exceed $0.00") end
       menu:add(name, price)
     else
-      target = self:parse_currency(line)
+      target = self.parse_currency(line)
     end
   end
 
